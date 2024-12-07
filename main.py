@@ -11,12 +11,17 @@ class Game:
         self.dt = 0
         self.clock = pygame.time.Clock()
 
-        self.fruit = Fruit(screen)
+        self.fruits = []
+        for i in range(10):
+            self.fruits.append(Fruit(self.screen))
 
     def handling_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.fruits.append(Fruit(self.screen))
 
     def hand_tracking(self):
         self.hand1 = None
@@ -32,8 +37,9 @@ class Game:
     def update(self):
         self.hand_tracking()
 
-        # Move fruit
-        self.fruit.move(self.dt)
+        # Move fruits
+        for fruit in self.fruits:
+            fruit.move(self.dt)
 
     def display(self):
         # Draw hands on camera frame
@@ -50,7 +56,10 @@ class Game:
         # Display camera frame with hands
         self.screen.blit(self.frame, (0, 0))
 
-        self.fruit.draw(self.screen)
+        # Display fruits
+        for fruit in self.fruits:
+            fruit.draw(self.screen)
+            
         pygame.display.flip()
 
     def run(self):
@@ -64,9 +73,12 @@ class Game:
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands()
+
+print("Starting video...")
 capture = cv2.VideoCapture(0)
 
 # Pygame
+print("Starting Pygame...")
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
 pygame.display.set_caption("Fruit NSInja")
