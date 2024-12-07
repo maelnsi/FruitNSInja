@@ -11,7 +11,6 @@ class Fruit:
         # Load image
         self.image = pygame.image.load(f"img/fruits/{self.name}.png")
         self.image = pygame.transform.scale(self.image, (80, 80))
-        self.image = pygame.transform.rotate(self.image, randint(0, 360))
 
         # Spawn fruit
         margin_x = 100
@@ -22,7 +21,8 @@ class Fruit:
         # Throw fruit
         self.velocity = [randint(-120, 120), randint(-800, -600)] # in px/s
         self.gravity = 800 # in px/s^2
-        self.rotate_vel = randint(20, 200) # in deg/s
+        self.rotate_vel = randint(-180, 180) # in deg/s
+        self.angle = randint(0,360)
         
         print(self.name, self.velocity[0], self.velocity[1], self.rotate_vel)
     
@@ -31,6 +31,13 @@ class Fruit:
         self.rect.x += self.velocity[0] * dt
         self.rect.y += self.velocity[1] * dt
         self.velocity[1] += self.gravity * dt
+
+        self.angle += self.rotate_vel * dt
     
     def draw(self, screen):
-        screen.blit(self.image, self.rect)
+        screen.blit(self.rotate_img(self.image, self.rect, self.angle), self.rect)
+    
+    def rotate_img(self, image, rect, angle):
+        rotated_img = pygame.transform.rotate(image, angle)
+        self.rect = rotated_img.get_rect(center=rect.center)
+        return rotated_img
