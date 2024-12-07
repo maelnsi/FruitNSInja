@@ -9,11 +9,11 @@ hands = mp_hands.Hands()
 
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
-pygame.display.set_caption("Ma fenêtre Pygame")
+pygame.display.set_caption("Fruit NSInja")
 clock = pygame.time.Clock()
 
-banana_img = pygame.image.load("banana.png").convert_alpha()
-banana_img = pygame.transform.scale(banana_img, (100, 100))
+apple_img = pygame.image.load("img/fruits/apple.png").convert_alpha()
+apple_img = pygame.transform.scale(apple_img, (100, 100))
 
 banana_xy = [300, 480]
 banana_vel = 40
@@ -46,7 +46,7 @@ while running:
     frame = pygame.surfarray.make_surface(frame)
     
     screen.blit(frame, (0, 0))
-    screen.blit(banana_img, banana_xy)
+    screen.blit(apple_img, banana_xy)
     pygame.display.update()
     
     banana_xy[1] -= banana_vel
