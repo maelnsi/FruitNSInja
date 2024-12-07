@@ -12,8 +12,6 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.fruits = []
-        for i in range(10):
-            self.fruits.append(Fruit(self.screen))
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -38,8 +36,15 @@ class Game:
         self.hand_tracking()
 
         # Move fruits
-        for fruit in self.fruits:
-            fruit.move(self.dt)
+        despawn = [] # index of fruits that have to despawn
+        for i in range(len(self.fruits)):
+            self.fruits[i].move(self.dt)
+
+            if self.fruits[i].rect.y > screen.get_height() + 20:
+                despawn.append(i)
+        
+        for i in despawn:
+            self.fruits.pop(i)
 
     def display(self):
         # Draw hands on camera frame
