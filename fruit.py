@@ -1,34 +1,35 @@
 import pygame
-import random
+from random import randint, choice
 
 fruit_names = ["apple", "banana", "blueberry", "pineapple", "strawberry", "watermelon"]
 
 class Fruit:
     def __init__(self, screen):
         # Pick random fruit
-        self.name = random.choice(fruit_names)
+        self.name = choice(fruit_names)
 
         # Load image
         self.image = pygame.image.load(f"img/fruits/{self.name}.png")
-        size = (100, 100)
-        self.image = pygame.transform.scale(self.image, size)
+        self.image = pygame.transform.scale(self.image, (80, 80))
+        self.image = pygame.transform.rotate(self.image, randint(0, 360))
 
         # Spawn fruit
-        x = random.randint(0, screen.get_width() - self.image.get_width())
+        margin_x = 100
+        x = randint(margin_x, screen.get_width() - self.image.get_width() - margin_x)
         y = screen.get_height()
         self.rect = self.image.get_rect(x=x, y=y) # Hitbox
 
         # Throw fruit
-        x_vel = random.randint(-10, 10)
-        y_vel = random.randint(-400, -300)
-        self.velocity = [x_vel, y_vel] # Vel
-        self.gravity = 50
+        self.velocity = [randint(-120, 120), randint(-800, -600)] # in px/s
+        self.gravity = 800 # in px/s^2
+        self.rotate_vel = randint(20, 200) # in deg/s
+        
+        print(self.name, self.velocity[0], self.velocity[1], self.rotate_vel)
     
     def move(self, dt):
+        # Physics
         self.rect.x += self.velocity[0] * dt
         self.rect.y += self.velocity[1] * dt
-
-        # Physics
         self.velocity[1] += self.gravity * dt
     
     def draw(self, screen):
