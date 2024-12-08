@@ -29,6 +29,8 @@ class Game:
         self.hand2 = None
 
         r, self.frame = capture.read()
+        
+        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB) # Convert the BGR image to RGB before processing.
         spotted_hands = hands.process(self.frame).multi_hand_landmarks
         if spotted_hands:
             self.hand1 = spotted_hands[0]
@@ -66,7 +68,6 @@ class Game:
             mp_drawing.draw_landmarks(self.frame, self.hand2, mp_hands.HAND_CONNECTIONS)
 
         # Convert OpenCV camera frame to Pygame image
-        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
         self.frame = np.rot90(self.frame)
         self.frame = pygame.surfarray.make_surface(self.frame)
 
