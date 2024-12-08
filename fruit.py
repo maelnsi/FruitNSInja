@@ -10,7 +10,7 @@ class Fruit:
 
         # Load image
         self.image = pygame.image.load(f"img/fruits/{self.name}.png")
-        self.image = pygame.transform.scale(self.image, (80, 80))
+        self.image = self.resize_image(self.image, 80)
 
         # Spawn fruit
         margin_x = 100
@@ -41,3 +41,8 @@ class Fruit:
         rotated_img = pygame.transform.rotate(image, angle)
         self.rect = rotated_img.get_rect(center=rect.center)
         return rotated_img
+    
+    def resize_image(self, image, width):
+        og_width, og_height = image.get_size()
+        height = int(width * og_height / og_width) # Calculate new height maintaining the aspect ratio
+        return pygame.transform.scale(image, (width, height))
