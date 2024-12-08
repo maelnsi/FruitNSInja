@@ -12,6 +12,7 @@ class Game:
         self.dt = 0
         self.clock = pygame.time.Clock()
 
+        self.finger_pos = [0, 0]
         self.fruits = []
         self.next_wave = 0
         self.active_wave = False
@@ -25,20 +26,29 @@ class Game:
                     self.fruits.append(Fruit(self.screen))
 
     def hand_tracking(self):
-        self.hand1 = None
-        self.hand2 = None
-
         r, self.frame = capture.read()
         
         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB) # Convert the BGR image to RGB before processing.
         spotted_hands = hands.process(self.frame).multi_hand_landmarks
         if spotted_hands:
-            self.hand1 = spotted_hands[0]
-            if len(spotted_hands) > 1:
-                self.hand2 = spotted_hands[1]
+            hand = spotted_hands[0]
+            mp_drawing.draw_landmarks(self.frame, hand, mp_hands.HAND_CONNECTIONS)
+            
+            # Computer finger coordinates
+            finger = hand.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
+            frame_h, frame_w, _ = self.frame.shape
+            x = frame_w - (finger.x * frame_w)
+            y = finger.y * frame_h
+            self.finger_pos = [x, y]
+            return True
+        return False
+
     
     def update(self):
-        self.hand_tracking()
+        now = pygame.time.get_ticks()
+        
+        if self.hand_tracking():
+            print(self.finger_pos)
 
         # Move fruits
         despawn_idx = -1 # index of fruit that has to despawn
@@ -61,12 +71,6 @@ class Game:
             self.active_wave = True
 
     def display(self):
-        # Draw hands on camera frame
-        if self.hand1:
-            mp_drawing.draw_landmarks(self.frame, self.hand1, mp_hands.HAND_CONNECTIONS)
-        if self.hand2:
-            mp_drawing.draw_landmarks(self.frame, self.hand2, mp_hands.HAND_CONNECTIONS)
-
         # Convert OpenCV camera frame to Pygame image
         self.frame = np.rot90(self.frame)
         self.frame = pygame.surfarray.make_surface(self.frame)
