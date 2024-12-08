@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import pygame
 import numpy as np
+from random import randint
 from fruit import Fruit
 
 class Game:
@@ -12,6 +13,8 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.fruits = []
+        self.next_wave = 0
+        self.active_wave = False
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -36,15 +39,24 @@ class Game:
         self.hand_tracking()
 
         # Move fruits
-        despawn = [] # index of fruits that have to despawn
+        despawn_idx = -1 # index of fruit that has to despawn
         for i in range(len(self.fruits)):
             self.fruits[i].move(self.dt)
 
             if self.fruits[i].rect.y > screen.get_height() + 20:
-                despawn.append(i)
+                despawn_idx = i
         
-        for i in despawn:
-            self.fruits.pop(i)
+        if despawn_idx != -1:
+            self.fruits.pop(despawn_idx)
+
+        if self.active_wave:
+            if len(self.fruits) == 0:
+                self.active_wave = False
+                self.next_wave = now + randint(500, 3000)
+                print("Next wave in", (self.next_wave - now)/1000)
+        elif now >= self.next_wave:
+            self.spawn_wave()
+            self.active_wave = True
 
     def display(self):
         # Draw hands on camera frame
@@ -73,6 +85,11 @@ class Game:
             self.update()
             self.display()
             self.dt = self.clock.tick(30) / 1000
+    
+    def spawn_wave(self):
+        print("Wave spawned !")
+        for i in range(randint(1,6)):
+            self.fruits.append(Fruit(self.screen))
 
 # Hand tracking with mediapipe
 mp_drawing = mp.solutions.drawing_utils
