@@ -9,7 +9,7 @@ class Fruit:
         self.name = choice(fruit_names)
 
         # Load image
-        self.image = pygame.image.load(f"img/fruits/{self.name}.png")
+        self.image = pygame.image.load(f"assets/fruits/{self.name}.png")
         self.image = self.resize_image(self.image, 80)
 
         # Spawn fruit
@@ -39,7 +39,7 @@ class Fruit:
         self.sliced = True
 
         # Change image
-        self.image = pygame.image.load(f"img/fruits/{self.name}_sliced.png")
+        self.image = pygame.image.load(f"assets/fruits/{self.name}_sliced.png")
         self.image = self.resize_image(self.image, 80)
     
     def draw(self, screen):
