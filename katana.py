@@ -20,8 +20,6 @@ class Katana:
                 dt = now - self.last_pos_time
                 if dt > 0:
                     self.vel = dist/dt # in px/s
-                    print(int(self.vel))
-
             self.rect = pygame.Rect(pos, (self.width, self.width))
             self.last_pos = pos
             self.last_pos_time = now
