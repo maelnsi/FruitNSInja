@@ -21,7 +21,7 @@ class Fruit:
         # Throw fruit
         self.velocity = [randint(-120, 120), randint(-700, -500)] # in px/s
         self.gravity = 600 # in px/s^2
-        self.rotate_vel = randint(-180, 180) # in deg/s
+        self.rotate_vel = randint(-200, 200) # in deg/s
         self.angle = randint(0,360)
         self.sliced = False
         
