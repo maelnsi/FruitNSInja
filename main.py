@@ -4,6 +4,7 @@ import pygame
 import numpy as np
 from random import randint
 from fruit import Fruit
+from katana import Katana
 
 class Game:
     def __init__(self, screen):
@@ -16,6 +17,8 @@ class Game:
         self.fruits = []
         self.next_wave = 0
         self.active_wave = False
+        
+        self.katana = Katana()
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -32,7 +35,7 @@ class Game:
         spotted_hands = hands.process(self.frame).multi_hand_landmarks
         if spotted_hands:
             hand = spotted_hands[0]
-            mp_drawing.draw_landmarks(self.frame, hand, mp_hands.HAND_CONNECTIONS)
+            #mp_drawing.draw_landmarks(self.frame, hand, mp_hands.HAND_CONNECTIONS)
             
             # Computer finger coordinates
             finger = hand.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
@@ -45,10 +48,12 @@ class Game:
 
     
     def update(self):
-        now = pygame.time.get_ticks()
+        now = pygame.time.get_ticks() / 1000
         
         if self.hand_tracking():
-            print(self.finger_pos)
+            self.katana.update_pos(self.finger_pos, now)
+        else:
+            self.katana.update_pos(None, now)
 
         # Move fruits
         despawn_idx = -1 # index of fruit that has to despawn
@@ -58,14 +63,22 @@ class Game:
             if self.fruits[i].rect.y > screen.get_height() + 20:
                 despawn_idx = i
         
+        # Despawn fruits that are off-screen
         if despawn_idx != -1:
             self.fruits.pop(despawn_idx)
+        
+        # Cut fruits
+        if self.katana.rect and self.katana.vel >= self.katana.slice_vel:
+            for fruit in self.fruits:
+                if fruit.rect.colliderect(self.katana.rect):
+                    fruit.slice()
 
+        # Spawn fruits wave
         if self.active_wave:
             if len(self.fruits) == 0:
                 self.active_wave = False
-                self.next_wave = now + randint(500, 3000)
-                print("Next wave in", (self.next_wave - now)/1000)
+                self.next_wave = now + (randint(500, 2000)/1000)
+                print("Next wave in", self.next_wave - now)
         elif now >= self.next_wave:
             self.spawn_wave()
             self.active_wave = True
@@ -81,7 +94,11 @@ class Game:
         # Display fruits
         for fruit in self.fruits:
             fruit.draw(self.screen)
-            
+
+        # Display katana
+        self.katana.draw(self.screen)
+        
+        # Update display
         pygame.display.flip()
 
     def run(self):

@@ -23,6 +23,7 @@ class Fruit:
         self.gravity = 800 # in px/s^2
         self.rotate_vel = randint(-180, 180) # in deg/s
         self.angle = randint(0,360)
+        self.sliced = False
         
         print(self.name, self.velocity[0], self.velocity[1], self.rotate_vel)
     
@@ -33,6 +34,13 @@ class Fruit:
         self.velocity[1] += self.gravity * dt
 
         self.angle += self.rotate_vel * dt
+    
+    def slice(self):
+        self.sliced = True
+
+        # Change image
+        self.image = pygame.image.load(f"img/fruits/{self.name}_sliced.png")
+        self.image = self.resize_image(self.image, 80)
     
     def draw(self, screen):
         screen.blit(self.rotate_img(self.image, self.rect, self.angle), self.rect)
