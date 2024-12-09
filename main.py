@@ -110,7 +110,7 @@ class Game:
     
     def spawn_wave(self):
         print("Wave spawned !")
-        for i in range(randint(1,6)):
+        for i in range(randint(1,5)):
             self.fruits.append(Fruit(self.screen))
 
 # Hand tracking with mediapipe
