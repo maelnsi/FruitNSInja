@@ -10,7 +10,7 @@ class Katana:
         self.last_pos = None
         self.last_pos_time = 0
         self.vel = 0 # in px/s
-        self.slice_vel = 500 # in px/s, minimum velocity to slice fruits
+        self.slice_vel = 200 # in px/s, minimum velocity to slice fruits
     
     def update_pos(self, pos, now):
         if pos:
