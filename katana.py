@@ -37,5 +37,5 @@ class Katana:
         trail = [point for point in self.trail if point]
 
         if len(trail) >= 2:
-            pygame.draw.lines(screen, (180, 180, 180), False, trail, self.width)
+            pygame.draw.lines(screen, (100, 100, 100), False, trail, self.width)
             pygame.draw.lines(screen, (255, 255, 255), False, trail, self.width - 6)
