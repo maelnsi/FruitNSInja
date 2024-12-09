@@ -19,8 +19,8 @@ class Fruit:
         self.rect = self.image.get_rect(x=x, y=y) # Hitbox
 
         # Throw fruit
-        self.velocity = [randint(-120, 120), randint(-800, -600)] # in px/s
-        self.gravity = 800 # in px/s^2
+        self.velocity = [randint(-120, 120), randint(-700, -500)] # in px/s
+        self.gravity = 600 # in px/s^2
         self.rotate_vel = randint(-180, 180) # in deg/s
         self.angle = randint(0,360)
         self.sliced = False
