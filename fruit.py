@@ -13,19 +13,24 @@ class Fruit:
         self.image = self.resize_image(self.image, 80)
 
         # Spawn fruit
-        margin_x = 200
+        margin_x = 80
         x = randint(margin_x, screen.get_width() - self.image.get_width() - margin_x)
         y = screen.get_height()
         self.rect = self.image.get_rect(x=x, y=y) # Hitbox
 
         # Throw fruit
-        self.velocity = [randint(-120, 120), randint(-600, -400)] # in px/s
+        x_vel = randint(0, 120)
+        if self.rect.x > screen.get_width() - self.image.get_width() - margin_x*2:
+            x_vel *= -1
+        elif self.rect.x > margin_x*2 and randint(0,1):
+            x_vel *= -1
+        self.velocity = [x_vel, randint(-600, -400)] # in px/s
         self.gravity = 400 # in px/s^2
         self.rotate_vel = randint(-200, 200) # in deg/s
         self.angle = randint(0,360)
         self.sliced = False
         
-        print(self.name, self.velocity[0], self.velocity[1], self.rotate_vel)
+        print(self.name, self.rect.x, self.velocity[0], self.velocity[1])
     
     def move(self, dt):
         # Physics
