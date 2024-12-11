@@ -50,11 +50,6 @@ class Game:
     
     def update(self):
         now = pygame.time.get_ticks() / 1000
-        
-        if self.hand_tracking():
-            self.katana.update_pos(self.finger_pos, now)
-        else:
-            self.katana.update_pos(None, now)
 
         # Move fruits
         despawn_idx = -1 # index of fruit that has to despawn
@@ -67,11 +62,11 @@ class Game:
         # Despawn fruits that are off-screen
         if despawn_idx != -1:
             self.sliceables.pop(despawn_idx)
-        
+
         # Cut fruits
-        if self.katana.rect and self.katana.vel >= self.katana.slice_vel:
+        if len(self.katana.trail) >= 2 and self.katana.vel >= self.katana.slice_vel:
             for sliceable in self.sliceables:
-                if not sliceable.sliced and sliceable.rect.colliderect(self.katana.rect):
+                if not sliceable.sliced and sliceable.rect.clipline(self.katana.trail[-1], self.katana.trail[-2]):
                     sliceable.slice()
 
         # Spawn fruits wave
@@ -83,6 +78,12 @@ class Game:
         elif now >= self.next_wave:
             self.spawn_wave()
             self.active_wave = True
+
+        # Hand tracking
+        if self.hand_tracking():
+            self.katana.update_pos(self.finger_pos, now)
+        else:
+            self.katana.remove_oldest_pos()
 
     def display(self):
         # Convert OpenCV camera frame to Pygame image
