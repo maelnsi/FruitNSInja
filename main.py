@@ -14,10 +14,10 @@ class Game:
         self.dt = 0
         self.clock = pygame.time.Clock()
 
-        self.finger_pos = [0, 0]
         self.sliceables = []
         self.next_wave = 0
         self.active_wave = False
+        self.finger_pos = None
         
         self.katana = Katana()
 
@@ -51,23 +51,25 @@ class Game:
     def update(self):
         now = pygame.time.get_ticks() / 1000
 
-        # Move fruits
+        # Move fruits/bombs
         despawn_idx = -1 # index of fruit that has to despawn
         for i in range(len(self.sliceables)):
             self.sliceables[i].update(self.dt)
-
             if self.sliceables[i].rect.y > screen.get_height() + 20:
                 despawn_idx = i
         
-        # Despawn fruits that are off-screen
+        # Despawn fruits/bombs that are off-screen
         if despawn_idx != -1:
             self.sliceables.pop(despawn_idx)
 
-        # Cut fruits
+        # Slice fruits/bombs
         if len(self.katana.trail) >= 2 and self.katana.vel >= self.katana.slice_vel:
             for sliceable in self.sliceables:
                 if not sliceable.sliced and sliceable.rect.clipline(self.katana.trail[-1], self.katana.trail[-2]):
                     sliceable.slice()
+                    # check if sliced a bomb
+                    if isinstance(sliceable, Bomb):
+                        self.running = False
 
         # Spawn fruits wave
         if self.active_wave:
