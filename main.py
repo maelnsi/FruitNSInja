@@ -4,6 +4,7 @@ import pygame
 import numpy as np
 from random import randint
 from fruit import Fruit
+from bomb import Bomb
 from katana import Katana
 
 class Game:
@@ -112,6 +113,8 @@ class Game:
         print("Wave spawned !")
         for i in range(randint(1,5)):
             self.sliceables.append(Fruit(self.screen))
+            if randint(0,10) == 0:
+                self.sliceables.append(Bomb(self.screen))
 
 # Hand tracking with mediapipe
 mp_drawing = mp.solutions.drawing_utils
