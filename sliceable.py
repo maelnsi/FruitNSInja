@@ -1,7 +1,7 @@
 import pygame
 from random import randint
 
-class Throwable:
+class Sliceable:
     def __init__(self, screen, img_path):
 
         # Load image

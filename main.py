@@ -14,7 +14,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.finger_pos = [0, 0]
-        self.fruits = []
+        self.sliceables = []
         self.next_wave = 0
         self.active_wave = False
         
@@ -26,7 +26,7 @@ class Game:
                 self.running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    self.fruits.append(Fruit(self.screen))
+                    self.sliceables.append(Fruit(self.screen))
 
     def hand_tracking(self):
         r, self.frame = capture.read()
@@ -57,25 +57,25 @@ class Game:
 
         # Move fruits
         despawn_idx = -1 # index of fruit that has to despawn
-        for i in range(len(self.fruits)):
-            self.fruits[i].move(self.dt)
+        for i in range(len(self.sliceables)):
+            self.sliceables[i].move(self.dt)
 
-            if self.fruits[i].rect.y > screen.get_height() + 20:
+            if self.sliceables[i].rect.y > screen.get_height() + 20:
                 despawn_idx = i
         
         # Despawn fruits that are off-screen
         if despawn_idx != -1:
-            self.fruits.pop(despawn_idx)
+            self.sliceables.pop(despawn_idx)
         
         # Cut fruits
         if self.katana.rect and self.katana.vel >= self.katana.slice_vel:
-            for fruit in self.fruits:
-                if fruit.rect.colliderect(self.katana.rect):
-                    fruit.slice()
+            for sliceable in self.sliceables:
+                if not sliceable.sliced and sliceable.rect.colliderect(self.katana.rect):
+                    sliceable.slice()
 
         # Spawn fruits wave
         if self.active_wave:
-            if len(self.fruits) == 0:
+            if len(self.sliceables) == 0:
                 self.active_wave = False
                 self.next_wave = now + (randint(500, 2000)/1000)
                 print("Next wave in", self.next_wave - now)
@@ -92,8 +92,8 @@ class Game:
         self.screen.blit(self.frame, (0, 0))
 
         # Display fruits
-        for fruit in self.fruits:
-            fruit.draw(self.screen)
+        for sliceable in self.sliceables:
+            sliceable.draw(self.screen)
 
         # Display katana
         self.katana.draw(self.screen)
@@ -111,7 +111,7 @@ class Game:
     def spawn_wave(self):
         print("Wave spawned !")
         for i in range(randint(1,5)):
-            self.fruits.append(Fruit(self.screen))
+            self.sliceables.append(Fruit(self.screen))
 
 # Hand tracking with mediapipe
 mp_drawing = mp.solutions.drawing_utils

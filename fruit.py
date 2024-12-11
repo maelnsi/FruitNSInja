@@ -1,8 +1,8 @@
 import pygame
 from random import choice
-from throwable import Throwable
+from sliceable import Sliceable
 
-class Fruit(Throwable):
+class Fruit(Sliceable):
     def __init__(self, screen):
         # Pick random fruit
         fruit_names = ["apple", "banana", "blueberry", "pineapple", "strawberry", "watermelon"]
