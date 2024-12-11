@@ -54,7 +54,7 @@ class Game:
         # Move fruits
         despawn_idx = -1 # index of fruit that has to despawn
         for i in range(len(self.sliceables)):
-            self.sliceables[i].move(self.dt)
+            self.sliceables[i].update(self.dt)
 
             if self.sliceables[i].rect.y > screen.get_height() + 20:
                 despawn_idx = i
@@ -81,7 +81,7 @@ class Game:
 
         # Hand tracking
         if self.hand_tracking():
-            self.katana.update_pos(self.finger_pos, now)
+            self.katana.update(self.finger_pos, now)
         else:
             self.katana.remove_oldest_pos()
 

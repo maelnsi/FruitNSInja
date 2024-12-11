@@ -10,7 +10,7 @@ class Katana:
         self.vel = 0 # in px/s
         self.slice_vel = 200 # in px/s, minimum velocity to slice fruits
 
-    def update_pos(self, pos, now):
+    def update(self, pos, now):
         # Calculate velocity
         if len(self.trail):
             dist = sqrt((pos[0]-self.trail[-1][0])**2 + (pos[1]-self.trail[-1][1])**2)

@@ -3,7 +3,6 @@ from random import randint
 
 class Sliceable:
     def __init__(self, screen, img_path):
-
         # Load image
         self.image = pygame.image.load(img_path)
         self.image = self.resize_image(self.image, 80)
@@ -26,7 +25,7 @@ class Sliceable:
         self.angle = randint(0,360)
         self.sliced = False
     
-    def move(self, dt):
+    def update(self, dt):
         # Physics
         self.rect.x += self.velocity[0] * dt
         self.rect.y += self.velocity[1] * dt
