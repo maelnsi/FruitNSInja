@@ -6,6 +6,7 @@ from random import randint
 from fruit import Fruit
 from bomb import Bomb
 from katana import Katana
+from font import Font
 
 class Game:
     def __init__(self, screen):
@@ -14,12 +15,14 @@ class Game:
         self.dt = 0
         self.clock = pygame.time.Clock()
 
+        self.score = 0
         self.sliceables = []
         self.next_wave = 0
         self.active_wave = False
         self.finger_pos = None
         
         self.katana = Katana()
+        self.font = Font('assets/font', 60)
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -70,6 +73,8 @@ class Game:
                     # check if sliced a bomb
                     if isinstance(sliceable, Bomb):
                         self.running = False
+                    else:
+                        self.score += 1
 
         # Spawn fruits wave
         if self.active_wave:
@@ -101,6 +106,9 @@ class Game:
 
         # Display katana
         self.katana.draw(self.screen)
+
+        # Display score
+        self.font.display(self.screen, str(self.score), 20, 20, 2)
         
         # Update display
         pygame.display.flip()
