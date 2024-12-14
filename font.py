@@ -6,7 +6,7 @@ class Font:
         self.font = {}
         for file_name in listdir(dir):
             char = file_name[0]
-            img = pygame.image.load(dir + '/' + file_name).convert_alpha()
+            img = pygame.image.load(dir + '/' + file_name)
             img = self.resize_image(img, size)
             self.font[char] = img
     
