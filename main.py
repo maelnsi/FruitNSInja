@@ -1,3 +1,5 @@
+# Voici un commentaire qui changera radicalement la face du projet
+
 import cv2
 import mediapipe as mp
 import pygame
