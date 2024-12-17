@@ -1,4 +1,4 @@
-# Voici un commentaire qui changera radicalement la face du projet
+# Voici un commentaire qui changera radicalement la face du projet et du monde
 
 import cv2
 import mediapipe as mp
