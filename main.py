@@ -6,10 +6,10 @@ from random import randint
 from fruit import Fruit
 from bomb import Bomb
 from katana import Katana
-from font import Font
+from ui import UserInterface
 
 class Game:
-    def __init__(self, screen):
+    def __init__(self, screen, capture):
         # Pygame
         self.screen = screen
         self.running = True
@@ -18,26 +18,19 @@ class Game:
 
         # Game components
         self.score = 0
+        self.lives = 3
         self.sliceables = []
-        self.next_wave = 0
+        self.next_wave = 3
         self.active_wave = False
         self.finger_pos = None
         self.katana = Katana()
-        self.font = Font('assets/font', 60)
+        self.ui = UserInterface()
         
         # Hand tracking with mediapipe
+        self.capture = capture
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_hands = mp.solutions.hands
         self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.4, min_tracking_confidence=0.1)
-
-        # Start webcam
-        font = pygame.font.Font(None, 30)
-        text = font.render("Starting webcam...", True, (255, 255, 255))
-        text_rect = text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
-        screen.blit(text, text_rect)
-        pygame.display.flip()
-        
-        self.capture = cv2.VideoCapture(0)
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -59,6 +52,11 @@ class Game:
         
         # Despawn fruits/bombs that are off-screen
         if despawn_idx != -1:
+            # Lose a life if fruit not sliced
+            if isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
+                self.lives -= 1
+                if self.lives == 0:
+                    self.running = False
             self.sliceables.pop(despawn_idx)
 
         # Slice fruits/bombs
@@ -71,6 +69,9 @@ class Game:
                         self.running = False
                     else:
                         self.score += 1
+                        # Gain a life each 100 points
+                        if self.score % 100 == 0 and self.lives < 3:
+                            self.lives += 1
 
         # Spawn fruits wave
         if self.active_wave:
@@ -81,6 +82,9 @@ class Game:
         elif now >= self.next_wave:
             self.spawn_wave()
             self.active_wave = True
+
+        # UI
+        self.ui.update(now)
 
         # Hand tracking
         if self.hand_tracking():
@@ -100,11 +104,11 @@ class Game:
         for sliceable in self.sliceables:
             sliceable.draw(self.screen)
 
+        # Display UI
+        self.ui.draw(self.screen, self.score, self.lives)
+
         # Display katana
         self.katana.draw(self.screen)
-
-        # Display score
-        self.font.display(self.screen, str(self.score), 20, 20, 2)
         
         # Update display
         pygame.display.flip()
@@ -141,15 +145,23 @@ class Game:
             return True
         return False
 
-# Pygame
-pygame.init()
-screen = pygame.display.set_mode((640, 480))
-pygame.display.set_caption("Fruit NSInja")
+# Start webcam
+capture = cv2.VideoCapture(0)
 
-# Game
-game = Game(screen)
-game.run()
+while True:
+    # Pygame
+    pygame.init()
+    screen = pygame.display.set_mode((640, 480))
+    pygame.display.set_caption("Fruit NSInja")
 
-# Deinitialize
-pygame.quit()
+    # Game
+    game = Game(screen, capture)
+    game.run()
+
+    # Deinitialize
+    pygame.quit()
+
+    if input("Type Q to quit: ").lower() == "q":
+        break
+
 cv2.destroyAllWindows()
