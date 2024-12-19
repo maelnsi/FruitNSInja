@@ -134,7 +134,7 @@ class Game:
         spotted_hands = self.hands.process(self.frame).multi_hand_landmarks
         if spotted_hands:
             hand = spotted_hands[0]
-            self.mp_drawing.draw_landmarks(self.frame, hand, self.mp_hands.HAND_CONNECTIONS)
+            #self.mp_drawing.draw_landmarks(self.frame, hand, self.mp_hands.HAND_CONNECTIONS)
             
             # Computer finger coordinates
             finger = hand.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP]
