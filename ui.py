@@ -6,14 +6,23 @@ class UserInterface:
     def __init__(self):
         self.font = Font('assets/font', 60)
 
-        self.x_blue = pygame.image.load('assets/x_blue.png')
-        self.x_blue = self.resize_image(self.x_blue, 50)
-        self.x_red = pygame.image.load('assets/x_red.png')
-        self.x_red = self.resize_image(self.x_red, 50)
+        self.x_blue_images = []
+        img = pygame.image.load('assets/x_blue.png')
+        for i in range(3):
+            self.x_blue_images.append(self.resize_image(img, 70-i*10))
+
+        self.x_red_images = []
+        img = pygame.image.load('assets/x_red.png')
+        for i in range(3):
+            self.x_red_images.append(self.resize_image(img, 70-i*10))
         
         self.x_red_frames = []
         for i in range(3):
-            self.x_red_frames.append(self.resize_image(pygame.image.load(f'assets/x_red_{i}.png'), 50))
+            self.x_red_frames.append([])
+            for j in range(3):
+                img = pygame.image.load(f'assets/x_red_{j}.png')
+                self.x_red_frames[i].append(self.resize_image(img, 70-i*10))
+
         self.animating_x_red = False
         self.x_red_anim_idx = 0
         self.x_red_anim_start = 0
@@ -35,14 +44,19 @@ class UserInterface:
     def draw(self, screen, score, lives):
         self.font.display(screen, str(score), 20, 20, 2)
 
+        x = screen.get_width() - 8
         for i in range(3):
+            x -= self.x_blue_images[i].get_width()
+            if i>0:
+                x -= 5
+
             if lives > i:
-                screen.blit(self.x_blue, (screen.get_width() - (i+1)*60, 20))
+                screen.blit(self.x_blue_images[i], (x, 8))
             else:
                 if self.animating_x_red:
-                    screen.blit(self.x_red_frames[self.x_red_anim_idx], (screen.get_width() - (i+1)*60, 20))
+                    screen.blit(self.x_red_frames[i][self.x_red_anim_idx], (x, 8))
                 else:
-                    screen.blit(self.x_red, (screen.get_width() - (i+1)*60, 20))
+                    screen.blit(self.x_red_images[i], (x, 8))
     
     def resize_image(self, image, width):
         og_width, og_height = image.get_size()
