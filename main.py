@@ -75,12 +75,29 @@ class Game:
 
         # Spawn fruits wave
         if self.active_wave:
-            if len(self.sliceables) == 0:
-                self.active_wave = False
-                self.next_wave = now + (randint(500, 2000)/1000)
-                print("Next wave in", self.next_wave - now)
+            if self.wave_spawned_fruits < self.wave_size and now - self.wave_last_fruit >= self.wave_interval:
+                self.sliceables.append(Fruit(self.screen))
+                self.wave_spawned_fruits += 1
+                self.wave_last_fruit = now
+
+                # End wave
+                if self.wave_spawned_fruits == self.wave_size:
+                    self.active_wave = False
+                    self.next_wave = now + (randint(3000, 5500)/1000)
+                    print("Next wave in", self.next_wave - now)
+
         elif now >= self.next_wave:
-            self.spawn_wave()
+            if randint(0, 1):
+                # Wave with all fruits at the same time
+                self.wave_size = randint(1,4)
+                self.wave_interval = 0
+            else:
+                # Wave with interval between fruits
+                self.wave_size = randint(2,8)
+                self.wave_interval = randint(400, 1000) / 1000
+
+            self.wave_spawned_fruits = 0
+            self.wave_last_fruit = 0
             self.active_wave = True
 
         # UI
@@ -119,13 +136,6 @@ class Game:
             self.update()
             self.display()
             self.dt = self.clock.tick(30) / 1000
-    
-    def spawn_wave(self):
-        print("Wave spawned !")
-        for i in range(randint(1,5)):
-            self.sliceables.append(Fruit(self.screen))
-            if randint(0,10) == 0:
-                self.sliceables.append(Bomb(self.screen))
     
     def hand_tracking(self):
         r, self.frame = self.capture.read()
