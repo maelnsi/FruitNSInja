@@ -75,16 +75,19 @@ class Game:
 
         # Spawn fruits wave
         if self.active_wave:
-            if self.wave_spawned_fruits < self.wave_size and now - self.wave_last_fruit >= self.wave_interval:
-                self.sliceables.append(Fruit(self.screen))
-                self.wave_spawned_fruits += 1
-                self.wave_last_fruit = now
-
-                # End wave
-                if self.wave_spawned_fruits == self.wave_size:
-                    self.active_wave = False
-                    self.next_wave = now + (randint(3000, 5500)/1000)
-                    print("Next wave in", self.next_wave - now)
+            if self.wave_spawned_sliceables < self.wave_size:
+                if now - self.wave_last_sliceable >= self.wave_interval:
+                    if randint(1, 7) == 1:
+                        self.sliceables.append(Bomb(self.screen))
+                    else:
+                        self.sliceables.append(Fruit(self.screen))
+                    self.wave_spawned_sliceables += 1
+                    self.wave_last_sliceable = now
+            # End wave
+            elif len(self.sliceables) == 0:
+                self.active_wave = False
+                self.next_wave = now + (randint(500, 3000)/1000)
+                print("Next wave in", self.next_wave - now)
 
         elif now >= self.next_wave:
             if randint(0, 1):
@@ -96,8 +99,8 @@ class Game:
                 self.wave_size = randint(2,8)
                 self.wave_interval = randint(400, 1000) / 1000
 
-            self.wave_spawned_fruits = 0
-            self.wave_last_fruit = 0
+            self.wave_spawned_sliceables = 0
+            self.wave_last_sliceable = 0
             self.active_wave = True
 
         # UI
