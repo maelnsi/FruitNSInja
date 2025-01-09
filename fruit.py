@@ -8,7 +8,7 @@ class Fruit(Sliceable):
         fruit_names = ["apple", "banana", "blueberry", "pineapple", "strawberry", "watermelon"]
         self.name = choice(fruit_names)
         super().__init__(screen, f"assets/fruits/{self.name}.png")
-        self.sound = pygame.mixer.Sound("slice.mp3")
+        self.sound = pygame.mixer.Sound("sfx/slice.mp3")
         print(self.name, self.rect.x, self.velocity[0], self.velocity[1])
     
     def slice(self):
