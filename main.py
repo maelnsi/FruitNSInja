@@ -15,7 +15,7 @@ class Game:
         self.running = True
         self.clock = pygame.time.Clock()
         self.dt = 0
-
+        
         # Game components
         self.score = 0
         self.lives = 3
@@ -31,6 +31,11 @@ class Game:
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_hands = mp.solutions.hands
         self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.4, min_tracking_confidence=0.1)
+    	
+        # Music
+        pygame.mixer.music.load('sfx/beijing.mp3')
+        pygame.mixer.music.set_volume(0.4)
+        pygame.mixer.music.play(-1)
 
     def handling_events(self):
         for event in pygame.event.get():
