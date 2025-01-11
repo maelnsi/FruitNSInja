@@ -20,7 +20,7 @@ class Game:
         self.score = 0
         self.lives = 3
         self.sliceables = []
-        self.next_wave = 3
+        self.next_wave = 0
         self.active_wave = False
         self.finger_pos = None
         self.katana = Katana()
@@ -58,10 +58,10 @@ class Game:
         # Despawn fruits/bombs that are off-screen
         if despawn_idx != -1:
             # Lose a life if fruit not sliced
-            if isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
-                self.lives -= 1
-                if self.lives == 0:
-                    self.running = False
+            #if isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
+            #    self.lives -= 1
+            #   if self.lives == 0:
+            #        self.running = False
             self.sliceables.pop(despawn_idx)
 
         # Slice fruits/bombs
@@ -89,9 +89,9 @@ class Game:
                     self.wave_spawned_sliceables += 1
                     self.wave_last_sliceable = now
             # End wave
-            elif len(self.sliceables) == 0:
+            elif self.wave_spawned_sliceables >= self.wave_size and len(self.sliceables) == 0:
                 self.active_wave = False
-                self.next_wave = now + (randint(500, 3000)/1000)
+                self.next_wave = now + randint(1, 3)
                 print("Next wave in", self.next_wave - now)
 
         elif now >= self.next_wave:

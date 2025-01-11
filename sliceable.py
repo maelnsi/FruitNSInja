@@ -2,28 +2,36 @@ import pygame
 from random import randint
 
 class Sliceable:
-    def __init__(self, screen, img_path):
-        # Load image
-        self.image = pygame.image.load(img_path)
+    def __init__(self, screen, img, menu=False, menu_x=0, menu_y=0):
+        # Load image or use preloaded Surface
+        if isinstance(img, str):  # If img is a file path, load it
+            self.image = pygame.image.load(img)
+        elif isinstance(img, pygame.Surface):  # If img is a pygame.Surface, use it directly
+            self.image = img
+        else:
+            raise TypeError("img must be a file path (str) or a pygame.Surface object")
+
+        # Resize image
         self.image = self.resize_image(self.image, 80)
 
         # Spawn
         margin_x = 80
         x = randint(margin_x, screen.get_width() - self.image.get_width() - margin_x)
         y = screen.get_height()
-        self.rect = self.image.get_rect(x=x, y=y) # Hitbox
+        self.rect = self.image.get_rect(x=x, y=y)  # Hitbox
 
         # Throw
         x_vel = randint(0, 120)
-        if self.rect.x > screen.get_width() - self.image.get_width() - margin_x*2:
+        if self.rect.x > screen.get_width() - self.image.get_width() - margin_x * 2:
             x_vel *= -1
-        elif self.rect.x > margin_x*2 and randint(0,1):
+        elif self.rect.x > margin_x * 2 and randint(0, 1):
             x_vel *= -1
-        self.velocity = [x_vel, randint(-600, -400)] # in px/s
-        self.gravity = 400 # in px/s^2
-        self.rotate_vel = randint(-200, 200) # in deg/s
-        self.angle = randint(0,360)
+        self.velocity = [x_vel, randint(-600, -400)]  # in px/s
+        self.gravity = 400  # in px/s^2
+        self.rotate_vel = randint(-200, 200)  # in deg/s
+        self.angle = randint(0, 360)
         self.sliced = False
+
     
     def update(self, dt):
         # Physics
