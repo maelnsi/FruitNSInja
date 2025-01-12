@@ -4,7 +4,11 @@ from random import randint
 
 class UserInterface:
     def __init__(self):
-        self.font = Font('assets/images//font', 60)
+        
+        self.logo= pygame.image.load("assets/images/ui/logo.png")
+        self.logo=self.resize_image(self.logo, 500)
+
+        self.font = Font('assets/images/font', 60)
 
         self.x_blue_images = []
         img = pygame.image.load('assets/images/ui/x_blue.png')
@@ -41,7 +45,11 @@ class UserInterface:
             self.x_red_anim_start = now
             self.animating_x_red = True
 
-    def draw(self, screen, score, lives):
+    def draw_menu(self,screen):
+        screen.blit(self.logo,(screen.get_width() / 2 - self.logo.get_width() / 2, 50))
+    
+    
+    def draw_game(self, screen, score, lives):
         self.font.display(screen, str(score), 20, 20, 2)
 
         x = screen.get_width() - 8
