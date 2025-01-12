@@ -27,7 +27,6 @@ class Game:
         self.ui = UserInterface()
         self.ingame = False
         
-        
         # Hand tracking with mediapipe
         self.capture = capture
         self.mp_drawing = mp.solutions.drawing_utils
@@ -51,7 +50,6 @@ class Game:
     def stop(self,now):
         self.active_wave = False
         self.next_wave = 99999999999999
-        self.sliceables = []
         self.ingame = False
         self.load_menu()
 
@@ -105,7 +103,6 @@ class Game:
                         else:
                             self.start(now)
                             self.sliceables.pop(0)
-                            
 
         # Spawn fruits wave
         if self.active_wave:
@@ -151,8 +148,6 @@ class Game:
         play_fruit=Fruit(screen, True, 250, 300, 150)
         self.sliceables.append(play_fruit)
 
-    
-
     def display(self):
         # Convert OpenCV camera frame to Pygame image
         self.frame = np.rot90(self.frame)
@@ -167,16 +162,15 @@ class Game:
                 continue
             sliceable.draw(self.screen)
         
-        
+        # Display UI
         if self.ingame:    
-            # Display UI
             self.ui.draw_game(self.screen, self.score, self.lives)
         else:
             self.ui.draw_menu(self.screen) #Main Menu
             
-
         # Display katana
         self.katana.draw(self.screen)
+
         # Update display
         pygame.display.flip()
 
@@ -207,7 +201,6 @@ class Game:
 
 # Start webcam
 capture = cv2.VideoCapture(0)
-
 
 # Pygame
 pygame.init()

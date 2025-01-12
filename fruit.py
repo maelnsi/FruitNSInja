@@ -27,20 +27,23 @@ class Fruit(Sliceable):
         self.sliced = True
         pygame.mixer.Sound.play(self.sound)
         
-
-        # Create two Sliceable objects (representing the halves) using the screen from the parent (Sliceable)
-        halfs = []
+        # Create two Sliceable objects for the halves
+        halves = []
         for i in range(2):
-            halfs.append(Sliceable(self.screen, f"assets/images/fruits/{self.name}_sliced_{i+1}.png"))
+            halves.append(Sliceable(self.screen, f"assets/images/fruits/{self.name}_sliced_{i+1}.png"))
 
         # Set the position of the halves to match the original fruit's position
-        for half in halfs:
+        for half in halves:
             if self.menu:
                 half.image=half.resize_image(half.image, self.image.get_width())
             half.rect.center = self.rect.center
             half.sliced = True
-            half.velocity = self.velocity.copy() # Change halfs velocities
-            for i in (0, 1):
-                half.velocity[i] += randint(-200, 200)
+
+            if randint(0,1):
+                half.velocity[0] = self.velocity[0] + randint(50, 300)
+            else:
+                half.velocity[0] = self.velocity[0] - randint(50, 300)
+
+            half.velocity[1] = randint(0, 100)
         
-        return halfs
+        return halves
