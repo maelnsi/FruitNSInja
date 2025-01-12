@@ -34,7 +34,7 @@ class Game:
     	
         # Music
         pygame.mixer.music.load('sfx/beijing.mp3')
-        pygame.mixer.music.set_volume(0.4)
+        pygame.mixer.music.set_volume(0)
         pygame.mixer.music.play(-1)
 
     def handling_events(self):
@@ -58,21 +58,27 @@ class Game:
         # Despawn fruits/bombs that are off-screen
         if despawn_idx != -1:
             # Lose a life if fruit not sliced
-            #if isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
-            #    self.lives -= 1
-            #   if self.lives == 0:
-            #        self.running = False
+            if isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
+               self.lives -= 1
+                # if self.lives == 0:
+                #     self.running = False
             self.sliceables.pop(despawn_idx)
 
         # Slice fruits/bombs
         if len(self.katana.trail) >= 2 and self.katana.vel >= self.katana.slice_vel:
             for sliceable in self.sliceables:
                 if not sliceable.sliced and sliceable.rect.clipline(self.katana.trail[-1], self.katana.trail[-2]):
-                    sliceable.slice()
-                    # check if sliced a bomb
+                    # Check if sliced a bomb
                     if isinstance(sliceable, Bomb):
+                        sliceable.slice()
                         self.running = False
                     else:
+                        halfs = sliceable.slice()
+
+                        # Add fruit halfs to sliceables list
+                        for half in halfs:
+                            self.sliceables.append(half)
+
                         self.score += 1
                         # Gain a life each 100 points
                         if self.score % 100 == 0 and self.lives < 3:
@@ -127,6 +133,8 @@ class Game:
 
         # Display fruits
         for sliceable in self.sliceables:
+            if isinstance(sliceable, Fruit) and sliceable.sliced:
+                continue
             sliceable.draw(self.screen)
 
         # Display UI
