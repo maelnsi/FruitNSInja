@@ -20,11 +20,13 @@ class Game:
         self.score = 0
         self.lives = 3
         self.sliceables = []
-        self.next_wave = 0
+        self.next_wave = 999999
         self.active_wave = False
         self.finger_pos = None
         self.katana = Katana()
         self.ui = UserInterface()
+        self.ingame = False
+        
         
         # Hand tracking with mediapipe
         self.capture = capture
@@ -34,8 +36,24 @@ class Game:
     	
         # Music
         pygame.mixer.music.load('assets/sounds/beijing.mp3')
-        pygame.mixer.music.set_volume(0)
+        pygame.mixer.music.set_volume(0.2)
         pygame.mixer.music.play(-1)
+
+        self.load_menu()
+
+    def start(self,now):
+        self.score = 0
+        self.lives = 3
+        self.next_wave = now + 3 
+        self.active_wave = False
+        self.ingame = True
+    
+    def stop(self,now):
+        self.active_wave = False
+        self.next_wave = 99999999999999
+        self.sliceables = []
+        self.ingame = False
+        self.load_menu()
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -54,14 +72,16 @@ class Game:
             self.sliceables[i].update(self.dt)
             if self.sliceables[i].rect.y > screen.get_height() + 20:
                 despawn_idx = i
-        
+            if isinstance(self.sliceables[i],Bomb):
+                self.sliceables[i].animate(now)
+
         # Despawn fruits/bombs that are off-screen
         if despawn_idx != -1:
             # Lose a life if fruit not sliced
             if isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
                self.lives -= 1
-                # if self.lives == 0:
-                #     self.running = False
+               if self.lives == 0:
+                    self.stop(now)
             self.sliceables.pop(despawn_idx)
 
         # Slice fruits/bombs
@@ -71,18 +91,21 @@ class Game:
                     # Check if sliced a bomb
                     if isinstance(sliceable, Bomb):
                         sliceable.slice()
-                        self.running = False
+                        self.stop(now)
                     else:
                         halfs = sliceable.slice()
-
                         # Add fruit halfs to sliceables list
                         for half in halfs:
                             self.sliceables.append(half)
-
-                        self.score += 1
-                        # Gain a life each 100 points
-                        if self.score % 100 == 0 and self.lives < 3:
-                            self.lives += 1
+                        if self.ingame:
+                            self.score += 10 
+                            # Gain a life each 100 points
+                            if self.score % 100 == 0 and self.lives < 3:
+                                self.lives += 1
+                        else:
+                            self.start(now)
+                            self.sliceables.pop(0)
+                            
 
         # Spawn fruits wave
         if self.active_wave:
@@ -97,7 +120,7 @@ class Game:
             # End wave
             elif self.wave_spawned_sliceables >= self.wave_size and len(self.sliceables) == 0:
                 self.active_wave = False
-                self.next_wave = now + randint(1, 3)
+                self.next_wave = now + randint(500,3000)/1000
                 print("Next wave in", self.next_wave - now)
 
         elif now >= self.next_wave:
@@ -122,6 +145,13 @@ class Game:
             self.katana.update(self.finger_pos, now)
         else:
             self.katana.remove_oldest_pos()
+    
+    def load_menu(self):
+        self.sliceables=[] 
+        play_fruit=Fruit(screen, True, 250, 300, 150)
+        self.sliceables.append(play_fruit)
+
+    
 
     def display(self):
         # Convert OpenCV camera frame to Pygame image
@@ -130,19 +160,23 @@ class Game:
 
         # Display camera frame with hands
         self.screen.blit(self.frame, (0, 0))
-
+        
         # Display fruits
         for sliceable in self.sliceables:
             if isinstance(sliceable, Fruit) and sliceable.sliced:
                 continue
             sliceable.draw(self.screen)
-
-        # Display UI
-        self.ui.draw(self.screen, self.score, self.lives)
+        
+        
+        if self.ingame:    
+            # Display UI
+            self.ui.draw_game(self.screen, self.score, self.lives)
+        else:
+            self.ui.draw_menu(self.screen) #Main Menu
+            
 
         # Display katana
         self.katana.draw(self.screen)
-        
         # Update display
         pygame.display.flip()
 
@@ -174,20 +208,17 @@ class Game:
 # Start webcam
 capture = cv2.VideoCapture(0)
 
-while True:
-    # Pygame
-    pygame.init()
-    screen = pygame.display.set_mode((640, 480))
-    pygame.display.set_caption("Fruit NSInja")
 
-    # Game
-    game = Game(screen, capture)
-    game.run()
+# Pygame
+pygame.init()
+screen = pygame.display.set_mode((640, 480))
+pygame.display.set_caption("Fruit NSInja")
 
-    # Deinitialize
-    pygame.quit()
+# Game
+game = Game(screen, capture)
+game.run()
 
-    if input("Type Q to quit: ").lower() == "q":
-        break
+# Deinitialize
+pygame.quit()
 
 cv2.destroyAllWindows()

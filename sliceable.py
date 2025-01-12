@@ -2,10 +2,10 @@ import pygame
 from random import randint
 
 class Sliceable:
-    def __init__(self, screen, img_path, menu=False, menu_x=0, menu_y=0):
+    def __init__(self, screen, img_path):
         
         self.image = pygame.image.load(img_path)
-        self.image = self.resize_image(self.image, 80)
+        self.image = self.resize_image(self.image, 115)
 
         # Spawn
         margin_x = 80
