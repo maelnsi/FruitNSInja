@@ -96,7 +96,7 @@ class Game:
                         for half in halfs:
                             self.sliceables.append(half)
                         if self.ingame:
-                            self.score += 10 
+                            self.score += 1
                             # Gain a life each 100 points
                             if self.score % 100 == 0 and self.lives < 3:
                                 self.lives += 1
