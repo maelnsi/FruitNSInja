@@ -11,9 +11,9 @@ class Fruit(Sliceable):
         self.name = choice(fruit_names)
 
         # Pass the screen and image to the Sliceable class using super()
-        super().__init__(screen, f"assets/fruits/{self.name}.png")
+        super().__init__(screen, f"assets/images/fruits/{self.name}.png")
 
-        self.sound = pygame.mixer.Sound("sfx/slice.mp3")
+        self.sound = pygame.mixer.Sound("assets/sounds/slice.mp3")
         print(self.name, self.rect.x, self.velocity[0], self.velocity[1])
 
     def slice(self):
@@ -23,7 +23,7 @@ class Fruit(Sliceable):
         # Create two Sliceable objects (representing the halves) using the screen from the parent (Sliceable)
         halfs = []
         for i in range(2):
-            halfs.append(Sliceable(self.screen, f"assets/fruits/{self.name}_sliced_{i+1}.png"))
+            halfs.append(Sliceable(self.screen, f"assets/images/fruits/{self.name}_sliced_{i+1}.png"))
 
         # Set the position of the halves to match the original fruit's position
         for half in halfs:
