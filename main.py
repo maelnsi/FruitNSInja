@@ -47,7 +47,7 @@ class Game:
         self.active_wave = False
         self.ingame = True
     
-    def stop(self,now):
+    def stop(self, now):
         self.active_wave = False
         self.next_wave = 99999999999999
         self.ingame = False
@@ -80,7 +80,8 @@ class Game:
                self.lives -= 1
                if self.lives == 0:
                     self.stop(now)
-            self.sliceables.pop(despawn_idx)
+            if self.ingame:
+                self.sliceables.pop(despawn_idx)
 
         # Slice fruits/bombs
         if len(self.katana.trail) >= 2 and self.katana.vel >= self.katana.slice_vel:
@@ -144,8 +145,8 @@ class Game:
             self.katana.remove_oldest_pos()
     
     def load_menu(self):
-        self.sliceables=[] 
-        play_fruit=Fruit(screen, True, 250, 300, 150)
+        self.sliceables = []
+        play_fruit=Fruit(screen, True, 250, 250, 150)
         self.sliceables.append(play_fruit)
 
     def display(self):
