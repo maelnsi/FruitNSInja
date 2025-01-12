@@ -54,7 +54,9 @@ class Game:
             self.sliceables[i].update(self.dt)
             if self.sliceables[i].rect.y > screen.get_height() + 20:
                 despawn_idx = i
-        
+            if isinstance(self.sliceables[i],Bomb):
+                self.sliceables[i].animate(now)
+
         # Despawn fruits/bombs that are off-screen
         if despawn_idx != -1:
             # Lose a life if fruit not sliced
@@ -97,7 +99,7 @@ class Game:
             # End wave
             elif self.wave_spawned_sliceables >= self.wave_size and len(self.sliceables) == 0:
                 self.active_wave = False
-                self.next_wave = now + randint(1, 3)
+                self.next_wave = now + randint(500,3000)/1000
                 print("Next wave in", self.next_wave - now)
 
         elif now >= self.next_wave:
