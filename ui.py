@@ -4,15 +4,15 @@ from random import randint
 
 class UserInterface:
     def __init__(self):
-        self.font = Font('assets/font', 60)
+        self.font = Font('assets/images//font', 60)
 
         self.x_blue_images = []
-        img = pygame.image.load('assets/x_blue.png')
+        img = pygame.image.load('assets/images/ui/x_blue.png')
         for i in range(3):
             self.x_blue_images.append(self.resize_image(img, 70-i*10))
 
         self.x_red_images = []
-        img = pygame.image.load('assets/x_red.png')
+        img = pygame.image.load('assets/images/ui/x_red.png')
         for i in range(3):
             self.x_red_images.append(self.resize_image(img, 70-i*10))
         
@@ -20,7 +20,7 @@ class UserInterface:
         for i in range(3):
             self.x_red_frames.append([])
             for j in range(3):
-                img = pygame.image.load(f'assets/x_red_{j}.png')
+                img = pygame.image.load(f'assets/images/ui/x_red_{j}.png')
                 self.x_red_frames[i].append(self.resize_image(img, 70-i*10))
 
         self.animating_x_red = False
