@@ -9,7 +9,7 @@ class Bomb(Sliceable):
             img = pygame.image.load(f'assets/images/bomb/bomb_{i}.png')
             self.frames.append(self.resize_image(img, 75))
         self.frame_idx=0
-        self.frame_interval=0.4
+        self.frame_interval=0.1
         self.last_frame=0
         print("bomb", self.rect.x, self.velocity[0], self.velocity[1])
     
@@ -20,6 +20,7 @@ class Bomb(Sliceable):
             if self.frame_idx > 2:
                 self.frame_idx = 0
             self.image=self.frames[self.frame_idx]
+            self.last_frame = now
     
     def slice(self):
         self.sliced = True
