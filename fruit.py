@@ -13,7 +13,7 @@ class Fruit(Sliceable):
         # Pass the screen and image to the Sliceable class using super()
         super().__init__(screen, f"assets/images/fruits/{self.name}.png")
         self.sound = pygame.mixer.Sound("assets/sounds/slice.mp3")
-        self.sound.set_volume(0.5)
+        self.sound.set_volume(0.15)
         if menu:
             self.rect.x=menu_x
             self.rect.y=menu_y
@@ -44,6 +44,6 @@ class Fruit(Sliceable):
             else:
                 half.velocity[0] = self.velocity[0] - randint(50, 300)
 
-            half.velocity[1] = randint(0, 100)
+            half.velocity[1] = randint(-200, 0)
         
         return halves
