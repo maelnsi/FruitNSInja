@@ -5,10 +5,14 @@ from random import randint
 class UserInterface:
     def __init__(self):
         
-        self.logo= pygame.image.load("assets/images/ui/logo.png")
+        self.logo = pygame.image.load("assets/images/ui/logo.png")
         self.logo=self.resize_image(self.logo, 500)
 
         self.font = Font('assets/images/font', 60)
+
+        self.score_icon = pygame.image.load("assets/images/ui/score_icon.png")
+        self.score_icon = self.resize_image(self.score_icon, 85)
+        self.score_icon = pygame.transform.rotate(self.score_icon, 50)
 
         self.x_blue_images = []
         img = pygame.image.load('assets/images/ui/x_blue.png')
@@ -50,7 +54,8 @@ class UserInterface:
     
     
     def draw_game(self, screen, score, lives):
-        self.font.display(screen, str(score), 20, 20, 2)
+        screen.blit(self.score_icon, (-30, -25))
+        self.font.display(screen, str(score), 80, 12, 2)
 
         x = screen.get_width() - 8
         for i in range(3):
