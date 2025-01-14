@@ -4,15 +4,15 @@ from random import randint
 class Splash:
     def __init__(self, fruit, now):
         self.image = pygame.image.load(f"assets/images/splashes/{fruit.name}_splash_{randint(0, 2)}.png")
-        self.image = self.resize_image(self.image, 140)
+        self.image = self.resize_image(self.image, randint(100, 180))
         self.rect = self.image.get_rect(x=fruit.rect.x, y=fruit.rect.y) # Hitbox
         self.image = self.rotate_img(self.image, self.rect, randint(0, 360))
 
-        self.opacity = 180
+        self.opacity = 160
         self.image.set_alpha(self.opacity)
 
         self.start = now
-        self.lifetime = randint(1000, 2500) / 1000
+        self.lifetime = randint(800, 2500) / 1000
         self.fading = False
 
     def update(self, now, dt):
