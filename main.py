@@ -143,7 +143,10 @@ class Game:
             # End wave
             elif self.wave_spawned_sliceables >= self.wave_size and len(self.sliceables) == 0:
                 self.active_wave = False
-                self.next_wave = now + randint(500,3000)/1000
+                interval = 800 - self.score * 3
+                if interval < 250:
+                    interval = 250
+                self.next_wave = now + randint(interval , interval * 4)/1000
                 print("Next wave in", self.next_wave - now)
 
         elif now >= self.next_wave:
@@ -154,8 +157,11 @@ class Game:
             else:
                 # Wave with interval between fruits
                 self.wave_size = randint(2,8)
-                self.wave_interval = randint(400, 1000) / 1000
-
+                interval = 400-self.score*3
+                if interval < 250:
+                    interval=250
+                self.wave_interval = randint(interval, interval*2) / 1000
+                
             self.wave_spawned_sliceables = 0
             self.wave_last_sliceable = 0
             self.active_wave = True
