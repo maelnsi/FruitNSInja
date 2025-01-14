@@ -59,8 +59,8 @@ class Game:
         self.active_wave = False
         self.next_wave = 99999999999999
         self.gameover = True
-        self.gameover_screen_time = now + 1
-        self.menu_time = now + 4 
+        self.gameover_screen_time = now + 0.5
+        self.menu_time = now + 3
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -85,7 +85,7 @@ class Game:
         # Despawn fruits/bombs that are off-screen
         if despawn_idx != -1:
             # Lose a life if fruit not sliced
-            if isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
+            if not self.gameover and isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
                self.lives -= 1
                pygame.mixer.Sound.play(self.strike)
                if self.lives == 0:
