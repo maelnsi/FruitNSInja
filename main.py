@@ -263,7 +263,5 @@ pygame.quit()
 
 cv2.destroyAllWindows()
 
-# combos
-# speed up
 # game over
-# splash
+

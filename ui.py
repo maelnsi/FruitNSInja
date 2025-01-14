@@ -1,12 +1,13 @@
 import pygame
 from font import Font
 from random import randint
+from math import cos,radians
 
 class UserInterface:
     def __init__(self):
-        
         self.logo = pygame.image.load("assets/images/ui/logo.png")
-        self.logo=self.resize_image(self.logo, 500)
+        self.logosize = 500
+        self.logo = self.resize_image(self.logo, self.logosize)
 
         self.font = Font('assets/images/font', 60)
 
@@ -48,9 +49,12 @@ class UserInterface:
             self.x_red_anim_idx = 0
             self.x_red_anim_start = now
             self.animating_x_red = True
+        self.logosize += cos(radians(now)*150)*4
+       
 
     def draw_menu(self,screen):
-        screen.blit(self.logo,(screen.get_width() / 2 - self.logo.get_width() / 2, 50))
+        resizedlogo = self.resize_image(self.logo, self.logosize)
+        screen.blit(resizedlogo,(screen.get_width() / 2 - resizedlogo.get_width() / 2, 50))
     
     
     def draw_game(self, screen, score, lives):
