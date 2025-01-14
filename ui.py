@@ -8,6 +8,8 @@ class UserInterface:
         self.logo = pygame.image.load("assets/images/ui/logo.png")
         self.logosize = 500
         self.logo = self.resize_image(self.logo, self.logosize)
+        self.game_over = pygame.image.load("assets/images/ui/game_over.png")
+        self.game_over = self.resize_image(self.game_over, 500)
 
         self.font = Font('assets/images/font', 60)
 
@@ -50,14 +52,14 @@ class UserInterface:
             self.x_red_anim_start = now
             self.animating_x_red = True
         self.logosize += cos(radians(now)*150)*4
-       
-
+    
     def draw_menu(self,screen):
         resizedlogo = self.resize_image(self.logo, self.logosize)
         screen.blit(resizedlogo,(screen.get_width() / 2 - resizedlogo.get_width() / 2, 50))
-    
-    
-    def draw_game(self, screen, score, lives):
+        
+    def draw_game(self, screen, score, lives, gameover):
+        if gameover:
+            screen.blit(self.game_over, (screen.get_width() / 2 - self.game_over.get_width() / 2, 50))
         screen.blit(self.score_icon, (-30, -25))
         self.font.display(screen, str(score), 80, 12, 2)
 

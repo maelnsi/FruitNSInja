@@ -28,7 +28,8 @@ class Game:
         self.katana = Katana()
         self.ui = UserInterface()
         self.ingame = False
-        self.died = False
+        self.gameover = False
+        self.gameover_screen = False
         
         # Hand tracking with mediapipe
         self.capture = capture
@@ -37,9 +38,9 @@ class Game:
         self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.4, min_tracking_confidence=0.1)
     	
         # Music
-        self.whoosh=pygame.mixer.Sound("assets/sounds/whoosh.mp3")
-        self.bomb_sound=pygame.mixer.Sound("assets/sounds/fuse.mp3")
-        self.bomb_explosion=pygame.mixer.Sound("assets/sounds/explosion.mp3")
+        self.whoosh = pygame.mixer.Sound("assets/sounds/whoosh.mp3")
+        self.bomb_sound = pygame.mixer.Sound("assets/sounds/fuse.mp3")
+        self.bomb_explosion = pygame.mixer.Sound("assets/sounds/explosion.mp3")
         self.strike=pygame.mixer.Sound("assets/sounds/strike.mp3")
         pygame.mixer.music.load('assets/sounds/beijing.mp3')
         pygame.mixer.music.set_volume(0.2)
@@ -57,8 +58,9 @@ class Game:
     def stop(self, now):
         self.active_wave = False
         self.next_wave = 99999999999999
-        self.died = True
-        self.menu_time = now + 1
+        self.gameover = True
+        self.gameover_screen_time = now + 1
+        self.menu_time = now + 4 
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -88,12 +90,11 @@ class Game:
                pygame.mixer.Sound.play(self.strike)
                if self.lives == 0:
                     self.stop(now)
-                    self.load_menu()
             if self.ingame:
                 self.sliceables.pop(despawn_idx)
 
         # Slice fruits/bombs
-        if not self.died and len(self.katana.trail) >= 2 and self.katana.vel >= self.katana.slice_vel:
+        if not self.gameover and len(self.katana.trail) >= 2 and self.katana.vel >= self.katana.slice_vel:
             for sliceable in self.sliceables:
                 if not sliceable.sliced and sliceable.rect.clipline(self.katana.trail[-1], self.katana.trail[-2]):
                     # Check if sliced a bomb
@@ -124,9 +125,13 @@ class Game:
                             self.start(now)
                             self.sliceables.pop(0)
                             
-        if self.died and now >= self.menu_time:
-            self.load_menu()
-            self.died = False
+        if self.gameover:
+            if now >= self.menu_time:
+                self.load_menu()
+                self.gameover_screen = False
+                self.gameover = False
+            elif not self.gameover_screen and now >= self.gameover_screen_time:
+                self.gameover_screen = True
 
         # Spawn fruits wave
         if self.active_wave:
@@ -211,7 +216,7 @@ class Game:
         
         # Display UI
         if self.ingame:    
-            self.ui.draw_game(self.screen, self.score, self.lives)
+            self.ui.draw_game(self.screen, self.score, self.lives, self.gameover_screen)
         else:
             self.ui.draw_menu(self.screen) #Main Menu
             
@@ -262,6 +267,3 @@ game.run()
 pygame.quit()
 
 cv2.destroyAllWindows()
-
-# game over
-

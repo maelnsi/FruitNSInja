@@ -25,7 +25,6 @@ class Sliceable:
         self.angle = randint(0, 360)
         self.sliced = False
 
-    
     def update(self, dt):
         # Physics
         self.rect.x += self.velocity[0] * dt

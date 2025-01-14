@@ -22,9 +22,7 @@ class Bomb(Sliceable):
         
         print("bomb", self.rect.x, self.velocity[0], self.velocity[1])
     
-    
     def animate(self,now):
-        
         if self.sliced:
             if self.explosion_idx < 7 and now - self.explosion_last_frame >= self.explosion_interval:
                 self.image=self.explosion_frames[self.explosion_idx]

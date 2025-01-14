@@ -17,7 +17,7 @@ class Splash:
 
     def update(self, now, dt):
         if self.fading:
-            self.opacity -= dt*200
+            self.opacity -= dt * 200
             if self.opacity < 0:
                 self.opacity = 0
             self.image.set_alpha(self.opacity)
