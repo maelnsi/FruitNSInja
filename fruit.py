@@ -7,7 +7,7 @@ class Fruit(Sliceable):
     def __init__(self, screen,menu=False, menu_x=0, menu_y=0, menu_size=180):
         # Pick random fruit
         self.screen = screen
-        fruit_names = ["apple", "banana", "cherry", "dragonfruit", "lime","watermelon"]
+        fruit_names = ["apple", "banana", "cherry", "dragonfruit", "lime", "watermelon"]
         self.name = choice(fruit_names)
         self.menu=menu
         # Pass the screen and image to the Sliceable class using super()

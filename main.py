@@ -7,6 +7,7 @@ from fruit import Fruit
 from bomb import Bomb
 from katana import Katana
 from ui import UserInterface
+from splash import Splash
 
 class Game:
     def __init__(self, screen, capture):
@@ -20,6 +21,7 @@ class Game:
         self.score = 0
         self.lives = 3
         self.sliceables = []
+        self.splashes = []
         self.next_wave = 999999
         self.active_wave = False
         self.finger_pos = None
@@ -115,6 +117,9 @@ class Game:
                             # Gain a life each 100 points
                             if self.score % 100 == 0 and self.lives < 3:
                                 self.lives += 1
+                            
+                            # Splash
+                            self.splashes.append(Splash(sliceable, now))
                         else:
                             self.start(now)
                             self.sliceables.pop(0)
@@ -154,6 +159,16 @@ class Game:
             self.wave_spawned_sliceables = 0
             self.wave_last_sliceable = 0
             self.active_wave = True
+        
+        # Splashes
+        despawn_idx = -1
+        for i in range(len(self.splashes)):
+            self.splashes[i].update(now, self.dt)
+            if self.splashes[i].opacity == 0:
+                despawn_idx = i
+
+        if despawn_idx != -1:
+            self.splashes.pop(despawn_idx)
 
         # UI
         self.ui.update(now)
@@ -177,6 +192,10 @@ class Game:
 
         # Display camera frame with hands
         self.screen.blit(self.frame, (0, 0))
+
+        # Splashes
+        for splash in self.splashes:
+            splash.draw(self.screen)
         
         # Display fruits
         for sliceable in self.sliceables:
