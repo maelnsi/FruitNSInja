@@ -35,6 +35,10 @@ class Game:
         self.hands = self.mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.4, min_tracking_confidence=0.1)
     	
         # Music
+        self.whoosh=pygame.mixer.Sound("assets/sounds/whoosh.mp3")
+        self.bomb_sound=pygame.mixer.Sound("assets/sounds/fuse.mp3")
+        self.bomb_explosion=pygame.mixer.Sound("assets/sounds/explosion.mp3")
+        self.strike=pygame.mixer.Sound("assets/sounds/strike.mp3")
         pygame.mixer.music.load('assets/sounds/beijing.mp3')
         pygame.mixer.music.set_volume(0.2)
         pygame.mixer.music.play(-1)
@@ -79,6 +83,7 @@ class Game:
             # Lose a life if fruit not sliced
             if isinstance(self.sliceables[despawn_idx], Fruit) and not self.sliceables[despawn_idx].sliced:
                self.lives -= 1
+               pygame.mixer.Sound.play(self.strike)
                if self.lives == 0:
                     self.stop(now)
                     self.load_menu()
@@ -92,6 +97,7 @@ class Game:
                     # Check if sliced a bomb
                     if isinstance(sliceable, Bomb):
                         sliceable.slice()
+                        pygame.mixer.Sound.play(self.bomb_explosion)
                         self.stop(now)
                         
                         # Freeze time
@@ -123,8 +129,10 @@ class Game:
                 if now - self.wave_last_sliceable >= self.wave_interval:
                     if randint(1, 6) == 1:
                         self.sliceables.append(Bomb(self.screen))
+                        pygame.mixer.Sound.play(self.bomb_sound)
                     else:
                         self.sliceables.append(Fruit(self.screen))
+                    pygame.mixer.Sound.play(self.whoosh)
                     self.wave_spawned_sliceables += 1
                     self.wave_last_sliceable = now
             # End wave
@@ -229,3 +237,8 @@ game.run()
 pygame.quit()
 
 cv2.destroyAllWindows()
+
+# combos
+# speed up
+# game over
+# splash
