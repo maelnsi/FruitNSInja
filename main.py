@@ -26,6 +26,7 @@ class Game:
         self.katana = Katana()
         self.ui = UserInterface()
         self.ingame = False
+        self.died = False
         
         # Hand tracking with mediapipe
         self.capture = capture
@@ -50,8 +51,8 @@ class Game:
     def stop(self, now):
         self.active_wave = False
         self.next_wave = 99999999999999
-        self.ingame = False
-        self.load_menu()
+        self.died = True
+        self.menu_time = now + 1
 
     def handling_events(self):
         for event in pygame.event.get():
@@ -80,17 +81,24 @@ class Game:
                self.lives -= 1
                if self.lives == 0:
                     self.stop(now)
+                    self.load_menu()
             if self.ingame:
                 self.sliceables.pop(despawn_idx)
 
         # Slice fruits/bombs
-        if len(self.katana.trail) >= 2 and self.katana.vel >= self.katana.slice_vel:
+        if not self.died and len(self.katana.trail) >= 2 and self.katana.vel >= self.katana.slice_vel:
             for sliceable in self.sliceables:
                 if not sliceable.sliced and sliceable.rect.clipline(self.katana.trail[-1], self.katana.trail[-2]):
                     # Check if sliced a bomb
                     if isinstance(sliceable, Bomb):
                         sliceable.slice()
                         self.stop(now)
+                        
+                        # Freeze time
+                        for s in self.sliceables:
+                            s.velocity = [0, 0]
+                            s.gravity = 0
+                            s.rotate_vel = 0
                     else:
                         halfs = sliceable.slice()
                         # Add fruit halfs to sliceables list
@@ -104,12 +112,16 @@ class Game:
                         else:
                             self.start(now)
                             self.sliceables.pop(0)
+                            
+        if self.died and now >= self.menu_time:
+            self.load_menu()
+            self.died = False
 
         # Spawn fruits wave
         if self.active_wave:
             if self.wave_spawned_sliceables < self.wave_size:
                 if now - self.wave_last_sliceable >= self.wave_interval:
-                    if randint(1, 7) == 1:
+                    if randint(1, 6) == 1:
                         self.sliceables.append(Bomb(self.screen))
                     else:
                         self.sliceables.append(Fruit(self.screen))
@@ -145,6 +157,7 @@ class Game:
             self.katana.remove_oldest_pos()
     
     def load_menu(self):
+        self.ingame = False
         self.sliceables = []
         play_fruit=Fruit(screen, True, 250, 250, 150)
         self.sliceables.append(play_fruit)
