@@ -77,7 +77,7 @@ class Game:
         despawn_idx = -1 # index of fruit that has to despawn
         for i in range(len(self.sliceables)):
             self.sliceables[i].update(self.dt)
-            if self.sliceables[i].rect.y > screen.get_height() + 20:
+            if self.sliceables[i].rect.y > self.screen.get_height() + 20:
                 despawn_idx = i
             if isinstance(self.sliceables[i],Bomb):
                 self.sliceables[i].animate(now)
@@ -193,7 +193,7 @@ class Game:
     def load_menu(self):
         self.ingame = False
         self.sliceables = []
-        play_fruit=Fruit(screen, True, 250, 250, 150)
+        play_fruit=Fruit(screen, True, self.screen.get_width()/2 - 150/2, 400, 220)
         self.sliceables.append(play_fruit)
 
     def display(self):
@@ -237,6 +237,14 @@ class Game:
         r, self.frame = self.capture.read()
         
         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB) # Convert the BGR image to RGB before processing.
+        
+        # Resize camera frame
+        frame_h, frame_w, _ = self.frame.shape
+        frame_w = int(self.screen.get_height() * frame_w / frame_h)
+        frame_h = self.screen.get_height()
+        
+        self.frame = cv2.resize(self.frame, (frame_w, frame_h))
+        
         spotted_hands = self.hands.process(self.frame).multi_hand_landmarks
         if spotted_hands:
             hand = spotted_hands[0]
@@ -244,7 +252,6 @@ class Game:
             
             # Computer finger coordinates
             finger = hand.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP]
-            frame_h, frame_w, _ = self.frame.shape
             x = frame_w - (finger.x * frame_w)
             y = finger.y * frame_h
             self.finger_pos = [x, y]
@@ -253,10 +260,12 @@ class Game:
 
 # Start webcam
 capture = cv2.VideoCapture(0)
+capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 # Pygame
 pygame.init()
-screen = pygame.display.set_mode((640, 480))
+screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
 pygame.display.set_caption("Fruit NSInja")
 
 # Game

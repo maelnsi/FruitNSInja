@@ -5,7 +5,7 @@ class Sliceable:
     def __init__(self, screen, img_path):
         
         self.image = pygame.image.load(img_path)
-        self.image = self.resize_image(self.image, 115)
+        self.image = self.resize_image(self.image, 150)
 
         # Spawn
         margin_x = 80
@@ -19,7 +19,7 @@ class Sliceable:
             x_vel *= -1
         elif self.rect.x > margin_x * 2 and randint(0, 1):
             x_vel *= -1
-        self.velocity = [x_vel, randint(-600, -400)] # in px/s
+        self.velocity = [x_vel, randint(-750, -500)] # in px/s
         self.gravity = 400 # in px/s^2
         self.rotate_vel = randint(-200, 200) # in deg/s
         self.angle = randint(0, 360)

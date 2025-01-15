@@ -6,10 +6,10 @@ from math import cos,radians
 class UserInterface:
     def __init__(self):
         self.logo = pygame.image.load("assets/images/ui/logo.png")
-        self.logosize = 500
+        self.logosize = 800
         self.logo = self.resize_image(self.logo, self.logosize)
         self.game_over = pygame.image.load("assets/images/ui/game_over.png")
-        self.game_over = self.resize_image(self.game_over, 600)
+        self.game_over = self.resize_image(self.game_over, 800)
 
         self.font = Font('assets/images/font', 60)
 
@@ -55,11 +55,11 @@ class UserInterface:
     
     def draw_menu(self,screen):
         resizedlogo = self.resize_image(self.logo, self.logosize)
-        screen.blit(resizedlogo,(screen.get_width() / 2 - resizedlogo.get_width() / 2, 50))
+        screen.blit(resizedlogo,(screen.get_width() / 2 - resizedlogo.get_width() / 2, 100))
         
     def draw_game(self, screen, score, lives, gameover):
         if gameover:
-            screen.blit(self.game_over, (screen.get_width() / 2 - self.game_over.get_width() / 2, 80))
+            screen.blit(self.game_over, (screen.get_width() / 2 - self.game_over.get_width() / 2, screen.get_height() / 2 - self.game_over.get_height() / 2))
         screen.blit(self.score_icon, (-30, -25))
         self.font.display(screen, str(score), 80, 12, 2)
 
