@@ -7,7 +7,7 @@ class Bomb(Sliceable):
         self.frames=[]
         for i in range(3):
             img = pygame.image.load(f'assets/images/bomb/bomb_{i}.png')
-            self.frames.append(self.resize_image(img, 75))
+            self.frames.append(self.resize_image(img, 130))
         self.frame_idx=0
         self.frame_interval=0.1
         self.last_frame=0
@@ -15,7 +15,7 @@ class Bomb(Sliceable):
         self.explosion_frames = []
         for i in range(7):
             img = pygame.image.load(f'assets/images/bomb/explosion_{i}.png')
-            self.explosion_frames.append(self.resize_image(img, 120))
+            self.explosion_frames.append(self.resize_image(img, 130))
         self.explosion_idx=0
         self.explosion_interval=0.05
         self.explosion_last_frame=0
