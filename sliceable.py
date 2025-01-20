@@ -3,9 +3,9 @@ from random import randint
 
 class Sliceable:
     def __init__(self, screen, img_path):
-        # Load image
+        
         self.image = pygame.image.load(img_path)
-        self.image = self.resize_image(self.image, 80)
+        self.image = self.resize_image(self.image, 150)
 
         # Spawn
         margin_x = 80
@@ -15,16 +15,16 @@ class Sliceable:
 
         # Throw
         x_vel = randint(0, 120)
-        if self.rect.x > screen.get_width() - self.image.get_width() - margin_x*2:
+        if self.rect.x > screen.get_width() - self.image.get_width() - margin_x * 2:
             x_vel *= -1
-        elif self.rect.x > margin_x*2 and randint(0,1):
+        elif self.rect.x > margin_x * 2 and randint(0, 1):
             x_vel *= -1
-        self.velocity = [x_vel, randint(-600, -400)] # in px/s
+        self.velocity = [x_vel, randint(-750, -500)] # in px/s
         self.gravity = 400 # in px/s^2
         self.rotate_vel = randint(-200, 200) # in deg/s
-        self.angle = randint(0,360)
+        self.angle = randint(0, 360)
         self.sliced = False
-    
+
     def update(self, dt):
         # Physics
         self.rect.x += self.velocity[0] * dt
@@ -32,9 +32,6 @@ class Sliceable:
         self.velocity[1] += self.gravity * dt
 
         self.angle += self.rotate_vel * dt
-    
-    def slice(self):
-        self.sliced = True
     
     def draw(self, screen):
         screen.blit(self.rotate_img(self.image, self.rect, self.angle), self.rect)
