@@ -4,7 +4,7 @@ from random import randint
 class Splash:
     def __init__(self, fruit, now):
         self.image = pygame.image.load(f"assets/images/splashes/{fruit.name}_splash_{randint(0, 2)}.png")
-        self.image = self.resize_image(self.image, randint(100, 180))
+        self.image = self.resize_image(self.image, randint(150, 250))
         self.rect = self.image.get_rect(x=fruit.rect.x, y=fruit.rect.y) # Hitbox
         self.image = self.rotate_img(self.image, self.rect, randint(0, 360))
 
